@@ -1,4 +1,4 @@
-RewriteEngine on
+<!-- RewriteEngine on
 RewriteCond $1 !^(index\.php|resources|robots\.txt)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -10,4 +10,39 @@ RewriteRule ^(.*)$ index.php/$1 [L,QSA]
   AddHandler application/x-httpd-ea-php71 .php .php7 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
+Options -Indexes -->
+
+RewriteEngine On
+
+# ----------------------------------------------------------------------
+# Redirect all traffic to the login page (except excluded paths)
+# ----------------------------------------------------------------------
+# Skip redirection if the request is already for the login page
+RewriteCond %{REQUEST_URI} !^/admin/login [NC]
+# Skip redirection for critical files/directories (adjust as needed)
+RewriteCond $1 !^(index\.php|resources|robots\.txt|assets|uploads|css|js|images) [NC]
+# Redirect everything else to the login page (use R=302 for testing, then change to 301)
+RewriteRule ^(.*)$ https://legal.mhakaattorneys.com/admin/login [R=302,L]
+
+# ----------------------------------------------------------------------
+# CodeIgniter Rules (remove index.php from URLs)
+# ----------------------------------------------------------------------
+RewriteCond $1 !^(index\.php|resources|robots\.txt)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L,QSA]
+
+# ----------------------------------------------------------------------
+# PHP Configuration (cPanel-generated)
+# ----------------------------------------------------------------------
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php71” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php71 .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+
+# ----------------------------------------------------------------------
+# Security: Disable directory listing
+# ----------------------------------------------------------------------
 Options -Indexes
